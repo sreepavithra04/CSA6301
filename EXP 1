@@ -1,0 +1,76 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyP/8w3fByz7kr458EVEt+pB",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/sreepavithra04/CSA6301/blob/main/EXP%201\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "djean4vDYvsK",
+        "outputId": "3915cdeb-14a1-41e8-867b-e842caf52c40"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Original : AttackAtDawn\n",
+            "Encrypted: DwwdfnDwGdzq\n",
+            "Decrypted: AttackAtDawn\n"
+          ]
+        }
+      ],
+      "source": [
+        "def caesar_encrypt(text, shift):\n",
+        "    result = \"\"\n",
+        "    for ch in text:\n",
+        "        if ch.isalpha():\n",
+        "            base = ord('A') if ch.isupper() else ord('a')\n",
+        "            result += chr((ord(ch) - base + shift) % 26 + base)\n",
+        "        else:\n",
+        "            result += ch\n",
+        "    return result\n",
+        "\n",
+        "def caesar_decrypt(text, shift):\n",
+        "    return caesar_encrypt(text, -shift)\n",
+        "\n",
+        "message = \"AttackAtDawn\"\n",
+        "shift = 3\n",
+        "\n",
+        "enc = caesar_encrypt(message, shift)\n",
+        "dec = caesar_decrypt(enc, shift)\n",
+        "\n",
+        "print(\"Original :\", message)\n",
+        "print(\"Encrypted:\", enc)\n",
+        "print(\"Decrypted:\", dec)"
+      ]
+    }
+  ]
+}
