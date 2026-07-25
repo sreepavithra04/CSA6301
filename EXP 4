@@ -1,0 +1,69 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyMFvF75N4CK05mUX1NmrY0z",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/sreepavithra04/CSA6301/blob/main/EXP%204\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 2,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "hVx4KrTUfpSd",
+        "outputId": "c51bffa5-b556-4869-a80c-2de2dd1d38b7"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Baseline (original.txt): 9ac62dc309d11594f1da0d160ded90eca26724461b1c55abeed293c23a0285d1\n",
+            "copy.txt: IDENTICAL\n",
+            "tampered.txt: MODIFIED/TAMPERED\n"
+          ]
+        }
+      ],
+      "source": [
+        "import hashlib\n",
+        "def hash_file(path):\n",
+        "    with open(path, \"rb\") as f:\n",
+        "        return hashlib.sha256(f.read()).hexdigest()\n",
+        "# Create sample files: one original, one copy, one tampered\n",
+        "with open(\"original.txt\", \"w\") as f: f.write(\"System32 backup data\")\n",
+        "with open(\"copy.txt\", \"w\") as f: f.write(\"System32 backup data\")\n",
+        "with open(\"tampered.txt\", \"w\") as f: f.write(\"System32 backup data - modified\")\n",
+        "files = [\"original.txt\", \"copy.txt\", \"tampered.txt\"]\n",
+        "hashes = {f: hash_file(f) for f in files}\n",
+        "baseline = hashes[\"original.txt\"]\n",
+        "print(\"Baseline (original.txt):\", baseline)\n",
+        "for f in files[1:]:\n",
+        "    status = \"IDENTICAL\" if hashes[f] == baseline else \"MODIFIED/TAMPERED\"\n",
+        "    print(f\"{f}: {status}\")"
+      ]
+    }
+  ]
+}
