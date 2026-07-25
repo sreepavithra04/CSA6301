@@ -1,0 +1,78 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyMng4AG0b900q7amx5pokd6",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/sreepavithra04/CSA6301/blob/main/EXP%2017\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 3,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "ogMS9l-9heO_",
+        "outputId": "cb2af7dc-8cf5-4e25-8446-67a4a4a0511a"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Normalized: [{'source': 'firewall', 'event_type': 'blocked', 'severity': 'high'}, {'source': 'antivirus', 'event_type': 'malware_detected', 'severity': 'high'}, {'source': 'server', 'event_type': 'login_success', 'severity': 'low'}]\n",
+            "Correlated (high severity): [{'source': 'firewall', 'event_type': 'blocked', 'severity': 'high'}, {'source': 'antivirus', 'event_type': 'malware_detected', 'severity': 'high'}]\n",
+            "Alerts: ['ALERT: firewall reported blocked', 'ALERT: antivirus reported malware_detected']\n"
+          ]
+        }
+      ],
+      "source": [
+        "raw_events = [\n",
+        "{\"source\": \"firewall\", \"ip\": \"45.33.32.156\", \"event\": \"blocked\"},\n",
+        "{\"source\": \"antivirus\", \"host\": \"WIN10-05\", \"event\": \"malware_detected\",\n",
+        "\"file\": \"invoice.exe\"},\n",
+        "{\"source\": \"server\", \"event\": \"login_success\", \"user\": \"admin\"},\n",
+        "]\n",
+        "def normalize(events):\n",
+        "    return [{\n",
+        "        \"source\": e[\"source\"],\n",
+        "        \"event_type\": e[\"event\"],\n",
+        "        \"severity\": \"high\" if e[\"event\"] in (\"malware_detected\", \"blocked\") else\n",
+        "        \"low\",\n",
+        "    } for e in events]\n",
+        "def correlation_engine(normalized_events):\n",
+        "    return [e for e in normalized_events if e[\"severity\"] == \"high\"]\n",
+        "def generate_alerts(high_severity_events):\n",
+        "    return [f\"ALERT: {e['source']} reported {e['event_type']}\" for e in\n",
+        "high_severity_events]\n",
+        "normalized = normalize(raw_events)\n",
+        "correlated = correlation_engine(normalized)\n",
+        "siem_alerts = generate_alerts(correlated)\n",
+        "print(\"Normalized:\", normalized)\n",
+        "print(\"Correlated (high severity):\", correlated)\n",
+        "print(\"Alerts:\", siem_alerts)"
+      ]
+    }
+  ]
+}
