@@ -1,0 +1,67 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyMNHbldPrFv/hDU/CI6+X9m",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/sreepavithra04/CSA6301/blob/main/EXP%202\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 2,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "BuwIGyPwY1iQ",
+        "outputId": "9ffe53f8-5b25-420d-efa2-517fcc4a2b3c"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Original hash : 5a54470e71678d9dbac7ffc51f2cd2a76cc1e8e0d1096bd698eef42229f687d7\n",
+            "Modified hash : 66aa68df2112cb433631ca8675173a88a7e6b2b8a64a4942d01221ee3e4ce2e2\n",
+            "Integrity check: FAILED (hash changed) -> file was modified\n"
+          ]
+        }
+      ],
+      "source": [
+        "import hashlib\n",
+        "def file_hash(filename, algo=\"sha256\"):\n",
+        "    h = hashlib.new(algo)\n",
+        "    with open(filename, \"rb\") as f:\n",
+        "        h.update(f.read())\n",
+        "    return h.hexdigest()\n",
+        "with open(\"sample.txt\", \"w\") as f:\n",
+        "    f.write(\"Confidential report v1\")\n",
+        "print(\"Original hash :\", file_hash(\"sample.txt\"))\n",
+        "with open(\"sample.txt\", \"a\") as f:\n",
+        "    f.write(\" - tampered!\")\n",
+        "print(\"Modified hash :\", file_hash(\"sample.txt\"))\n",
+        "print(\"Integrity check: FAILED (hash changed) -> file was modified\")"
+      ]
+    }
+  ]
+}
