@@ -1,0 +1,62 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyOWKtJcJld92lhjVUSG8OD3",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/sreepavithra04/CSA6301/blob/main/EXP%205\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 2,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "_y4c_1lCZgqv",
+        "outputId": "b6da147a-28a8-4d51-ad50-e56a2b116382"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "www.google.com                 -> 142.251.157.119\n",
+            "www.python.org                 -> 151.101.0.223\n",
+            "notarealdomain12345.com        -> Could not resolve (invalid/unreachable)\n"
+          ]
+        }
+      ],
+      "source": [
+        "import socket\n",
+        "domains = [\"www.google.com\", \"www.python.org\", \"notarealdomain12345.com\"]\n",
+        "for d in domains:\n",
+        "    try:\n",
+        "        ip = socket.gethostbyname(d)\n",
+        "        print(f\"{d:30s} -> {ip}\")\n",
+        "    except socket.gaierror:\n",
+        "        print(f\"{d:30s} -> Could not resolve (invalid/unreachable)\")"
+      ]
+    }
+  ]
+}
