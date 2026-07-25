@@ -1,0 +1,65 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyNQbDcf5E6PwEhKaQIQl2HX",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/sreepavithra04/CSA6301/blob/main/EXP%208\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 2,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "C3m0FUyCaRGk",
+        "outputId": "2b36906e-0214-4484-a879-6d66e9e71a2c"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Attempting dictionary attack on stolen hash...\n",
+            "Password cracked: 'letmein'\n"
+          ]
+        }
+      ],
+      "source": [
+        "import hashlib\n",
+        "# Simulate a stolen password hash (a real system would never expose this!)\n",
+        "stolen_hash = hashlib.sha256(\"letmein\".encode()).hexdigest()\n",
+        "wordlist = [\"123456\", \"password\", \"admin\", \"letmein\", \"qwerty\"]\n",
+        "print(\"Attempting dictionary attack on stolen hash...\")\n",
+        "for word in wordlist:\n",
+        "    guess_hash = hashlib.sha256(word.encode()).hexdigest()\n",
+        "    if guess_hash == stolen_hash:\n",
+        "        print(f\"Password cracked: '{word}'\")\n",
+        "        break\n",
+        "else: # This 'else' is for the 'for' loop, meaning it runs if the loop completes without a 'break'\n",
+        "    print(\"Password not found in wordlist.\")"
+      ]
+    }
+  ]
+}
