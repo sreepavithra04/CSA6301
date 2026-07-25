@@ -1,0 +1,79 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyObo0KKkqBcJX297NO0ml9V",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/sreepavithra04/CSA6301/blob/main/EXP%2015\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 2,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "kzfSPq_xg-LX",
+        "outputId": "7b8f76f3-6a0f-454c-aea6-eebe6d9e3659"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Attack scenario: {'indicators': 3, 'reasons': ['Failed login at firewall', 'Windows account locked', 'Repeated VPN authentication failures'], 'brute_force_detected': True}\n",
+            "Normal scenario: {'indicators': 0, 'reasons': [], 'brute_force_detected': False}\n"
+          ]
+        }
+      ],
+      "source": [
+        "def correlate_logs(firewall_log, windows_log, vpn_log):\n",
+        "    indicators = 0\n",
+        "    reasons = []\n",
+        "    if firewall_log.get(\"event\") == \"failed_login\":\n",
+        "        indicators += 1\n",
+        "        reasons.append(\"Failed login at firewall\")\n",
+        "    if windows_log.get(\"event\") == \"account_locked\":\n",
+        "        indicators += 1\n",
+        "        reasons.append(\"Windows account locked\")\n",
+        "    if vpn_log.get(\"failed_attempts\", 0) >= 3:\n",
+        "        indicators += 1\n",
+        "        reasons.append(\"Repeated VPN authentication failures\")\n",
+        "    return {\"indicators\": indicators, \"reasons\": reasons, \"brute_force_detected\":\n",
+        "            indicators >= 2}\n",
+        "scenario_attack = correlate_logs(\n",
+        "    {\"event\": \"failed_login\", \"ip\": \"192.168.10.5\"},\n",
+        "    {\"event\": \"account_locked\", \"user\": \"jdoe\"},\n",
+        "    {\"failed_attempts\": 5},\n",
+        ")\n",
+        "scenario_normal = correlate_logs(\n",
+        "    {\"event\": \"login_success\"},\n",
+        "    {\"event\": \"none\"},\n",
+        "    {\"failed_attempts\": 0},\n",
+        ")\n",
+        "print(\"Attack scenario:\", scenario_attack)\n",
+        "print(\"Normal scenario:\", scenario_normal)"
+      ]
+    }
+  ]
+}
