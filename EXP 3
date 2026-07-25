@@ -1,0 +1,73 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyNJD+4Umj/rqcKe9qLbJIC0",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/sreepavithra04/CSA6301/blob/main/EXP%203\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 1,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "d3tsw1WjZLX3",
+        "outputId": "75f37843-3956-477e-ed2d-83cda98e5ad7"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Scanning 127.0.0.1 ...\n",
+            "Port 21: closed\n",
+            "Port 22: closed\n",
+            "Port 23: closed\n",
+            "Port 25: closed\n",
+            "Port 80: closed\n",
+            "Port 443: closed\n",
+            "Port 3306: closed\n",
+            "Port 8080: OPEN\n"
+          ]
+        }
+      ],
+      "source": [
+        "import socket\n",
+        "def scan_port(host, port):\n",
+        "    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)\n",
+        "    s.settimeout(0.5)\n",
+        "    result = s.connect_ex((host, port))\n",
+        "    s.close()\n",
+        "    return result == 0\n",
+        "target = \"127.0.0.1\" # scan your own machine (localhost)\n",
+        "ports = [21, 22, 23, 25, 80, 443, 3306, 8080]\n",
+        "print(f\"Scanning {target} ...\")\n",
+        "for port in ports:\n",
+        "    status = \"OPEN\" if scan_port(target, port) else \"closed\"\n",
+        "    print(f\"Port {port}: {status}\")"
+      ]
+    }
+  ]
+}
