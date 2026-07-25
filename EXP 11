@@ -1,0 +1,65 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyMYIvthcR70nkk+HJIy6tW5",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/sreepavithra04/CSA6301/blob/main/EXP%2011\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 1,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "nhSNSzA8d2_Z",
+        "outputId": "a57673f7-bc64-4075-b05f-8e8556ac04e2"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Encrypted (what an eavesdropper sees): b'gAAAAABqZHjNVvine6IV8Cw94Q-UttWJTEa3kJCS4Mx3AdoXU649RoJAGBw70kGAiHmtL_cQxna9Wx2t5KiHtvXpeEFz-wilPerno4YZh-Futw5KLXysJIE='\n",
+            "Decrypted (what the receiver reads): Transfer $500 to account 12345\n"
+          ]
+        }
+      ],
+      "source": [
+        "from cryptography.fernet import Fernet\n",
+        "# Install once: pip install cryptography\n",
+        "# Step 1: Generate a shared secret key (both sender & receiver need this)\n",
+        "key = Fernet.generate_key()\n",
+        "cipher = Fernet(key)\n",
+        "# Step 2: Sender encrypts the message before sending over the network\n",
+        "message = b\"Transfer $500 to account 12345\"\n",
+        "encrypted = cipher.encrypt(message)\n",
+        "print(\"Encrypted (what an eavesdropper sees):\", encrypted)\n",
+        "# Step 3: Receiver decrypts it using the same key\n",
+        "decrypted = cipher.decrypt(encrypted)\n",
+        "print(\"Decrypted (what the receiver reads):\", decrypted.decode())"
+      ]
+    }
+  ]
+}
