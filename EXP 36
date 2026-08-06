@@ -1,0 +1,96 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyMkza2CjLjtpjVNaNIVxm7B",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/sreepavithra04/CSA6301/blob/main/EXP%2036\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 3,
+      "metadata": {
+        "id": "t5NRDzyfm0An"
+      },
+      "outputs": [],
+      "source": [
+        "def zero_trust_authorize(request, resource_policy):\n",
+        "    \"\"\"request: {\"user\",\"mfa_passed\",\"device_posture\":{\"antivirus_enabled\",\"os_patched\"},\"resource\"}\n",
+        "    resource_policy: {resource: set(allowed_users)}\n",
+        "    Access requires: user authorized for the resource AND mfa_passed AND a\n",
+        "    healthy device posture — regardless of network location or prior logins.\"\"\"\n",
+        "    reasons = []\n",
+        "    allowed_users = resource_policy.get(request[\"resource\"], set())\n",
+        "    if request[\"user\"] not in allowed_users:\n",
+        "        reasons.append(\"user not authorized for this resource\")\n",
+        "    if not request[\"mfa_passed\"]:\n",
+        "        reasons.append(\"MFA not completed\")\n",
+        "    if not request[\"device_posture\"][\"antivirus_enabled\"]:\n",
+        "        reasons.append(\"antivirus disabled\")\n",
+        "    if not request[\"device_posture\"][\"os_patched\"]:\n",
+        "        reasons.append(\"OS not fully patched\")\n",
+        "    return {\"granted\": len(reasons) == 0, \"reasons\": reasons}"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def test_experiment8():\n",
+        "    policy = {\"finance_db\": {\"csmith\", \"afinance\"}}\n",
+        "    healthy_request = {\n",
+        "    \"user\": \"csmith\", \"mfa_passed\": True,\n",
+        "    \"device_posture\": {\"antivirus_enabled\": True, \"os_patched\": True},\n",
+        "    \"resource\": \"finance_db\",\n",
+        "    }\n",
+        "    assert zero_trust_authorize(healthy_request, policy)[\"granted\"] is True\n",
+        "    # Same user, correct password/MFA, but antivirus disabled -> still denied\n",
+        "    unhealthy_request = dict(healthy_request, device_posture={\"antivirus_enabled\": False, \"os_patched\": True})\n",
+        "    result2 = zero_trust_authorize(unhealthy_request, policy)\n",
+        "    assert result2[\"granted\"] is False\n",
+        "    assert \"antivirus disabled\" in result2[\"reasons\"]\n",
+        "    # A stolen credential for a user never authorized for this resource\n",
+        "    unauthorized_request = dict(healthy_request, user=\"attacker99\")\n",
+        "    assert zero_trust_authorize(unauthorized_request, policy)[\"granted\"] is False\n",
+        "    print(\"All test cases passed.\")\n",
+        "test_experiment8()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "i_Zl6jS_nF1W",
+        "outputId": "75efd352-f871-4dc9-8f09-3fdfe1eea6ef"
+      },
+      "execution_count": 4,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "All test cases passed.\n"
+          ]
+        }
+      ]
+    }
+  ]
+}
