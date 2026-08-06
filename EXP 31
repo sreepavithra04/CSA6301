@@ -1,0 +1,90 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyM0Tt1cjJjmOBh4RMkl3+LF",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/sreepavithra04/CSA6301/blob/main/EXP%2031\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 3,
+      "metadata": {
+        "id": "B9_1F7z4k-G3"
+      },
+      "outputs": [],
+      "source": [
+        "IDS_RULES = [\n",
+        "    {\"sid\": 2000001, \"msg\": \"Possible SQL Injection\",\n",
+        "     \"proto\": \"tcp\", \"dst_port\": 80, \"content\": \"union select\"},\n",
+        "    {\"sid\": 2000002, \"msg\": \"Directory Traversal Attempt\",\n",
+        "     \"proto\": \"tcp\", \"dst_port\": 80, \"content\": \"../../../etc/passwd\"},\n",
+        "    {\"sid\": 2000003, \"msg\": \"Suspicious RDP Brute Force Pattern\",\n",
+        "     \"proto\": \"tcp\", \"dst_port\": 3389, \"content\": \"login_attempt\"},\n",
+        "]\n",
+        "def scan_packet(packet, rules=IDS_RULES):\n",
+        "    \"\"\"packet: {\"proto\",\"dst_port\",\"payload\"}. A rule fires only if BOTH\n",
+        "    the protocol/port match AND the content pattern is found (case-insensitive).\"\"\"\n",
+        "    alerts = []\n",
+        "    payload_lower = packet[\"payload\"].lower()\n",
+        "    for rule in rules:\n",
+        "        if packet[\"proto\"] == rule[\"proto\"] and packet[\"dst_port\"] == rule[\"dst_port\"]:\n",
+        "            if rule[\"content\"] in payload_lower:\n",
+        "                alerts.append(rule[\"msg\"])\n",
+        "    return alerts"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def test_experiment3():\n",
+        "    sqli_packet = {\"proto\": \"tcp\", \"dst_port\": 80, \"payload\": \"id=1' UNION SELECT user,pass FROM accounts--\"}\n",
+        "    assert \"Possible SQL Injection\" in scan_packet(sqli_packet)\n",
+        "    traversal_packet = {\"proto\": \"tcp\", \"dst_port\": 80, \"payload\": \"GET /files?path=../../../etc/passwd\"}\n",
+        "    assert \"Directory Traversal Attempt\" in scan_packet(traversal_packet)\n",
+        "    # Same content string but wrong port context -> must NOT alert\n",
+        "    wrong_context = {\"proto\": \"tcp\", \"dst_port\": 22, \"payload\": \"id=1' UNION SELECT user,pass FROM accounts--\"}\n",
+        "    assert scan_packet(wrong_context) == []\n",
+        "    print(\"All test cases passed.\")\n",
+        "test_experiment3()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "CzqBaQpMlKRV",
+        "outputId": "8c95cfd1-908a-4eb9-919b-f19ebe88e387"
+      },
+      "execution_count": 4,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "All test cases passed.\n"
+          ]
+        }
+      ]
+    }
+  ]
+}
