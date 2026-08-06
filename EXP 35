@@ -1,0 +1,92 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyPUC0uRSyqX4wb4i5qIo1Z2",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/sreepavithra04/CSA6301/blob/main/EXP%2035\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 3,
+      "metadata": {
+        "id": "3fy72zhOmiKB"
+      },
+      "outputs": [],
+      "source": [
+        "ROLE_REQUIREMENTS = {\n",
+        "    \"intern\": {\"read_reports\"},\n",
+        "    \"analyst\": {\"read_reports\", \"write_reports\"},\n",
+        "    \"admin\": {\"read_reports\", \"write_reports\", \"manage_users\", \"manage_servers\"},\n",
+        "}\n",
+        "def find_over_privileged_users(users, role_requirements=ROLE_REQUIREMENTS):\n",
+        "    \"\"\"users: {username: {\"role\": str, \"granted_permissions\": set}}.\n",
+        "    Returns {username: excess_permissions} for anyone holding more access\n",
+        "    than their role requires — a least-privilege violation.\"\"\"\n",
+        "    violations = {}\n",
+        "    for username, info in users.items():\n",
+        "        required = role_requirements.get(info[\"role\"], set())\n",
+        "        excess = info[\"granted_permissions\"] - required\n",
+        "        if excess:\n",
+        "            violations[username] = excess\n",
+        "    return violations"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def test_experiment7():\n",
+        "    users = {\n",
+        "        \"jdoe\": {\"role\": \"intern\", \"granted_permissions\": {\"read_reports\"}},\n",
+        "        \"asmith\": {\"role\": \"analyst\", \"granted_permissions\": {\"read_reports\", \"write_reports\"}},\n",
+        "        \"kintern\": {\"role\": \"intern\",\n",
+        "                    \"granted_permissions\": {\"read_reports\", \"manage_users\", \"manage_servers\"}},\n",
+        "    }\n",
+        "    violations = find_over_privileged_users(users)\n",
+        "    assert \"jdoe\" not in violations\n",
+        "    assert \"asmith\" not in violations\n",
+        "    assert \"kintern\" in violations\n",
+        "    assert violations[\"kintern\"] == {\"manage_users\", \"manage_servers\"}\n",
+        "    print(\"All test cases passed.\")\n",
+        "test_experiment7()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "MitivQAAmwZ-",
+        "outputId": "3a714b23-ca90-4cb4-d18f-813bf911351e"
+      },
+      "execution_count": 4,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "All test cases passed.\n"
+          ]
+        }
+      ]
+    }
+  ]
+}
