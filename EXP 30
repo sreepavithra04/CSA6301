@@ -1,0 +1,94 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyNXo6Bil73rKj0pgPbQnQNG",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/sreepavithra04/CSA6301/blob/main/EXP%2030\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 2,
+      "metadata": {
+        "id": "nXnKkr3TkgSv"
+      },
+      "outputs": [],
+      "source": [
+        "def handle_outbound_syn(packet, state_table, allow_rules):\n",
+        "    \"\"\"packet: {\"src\",\"sport\",\"dst\",\"dport\"} outbound SYN.\n",
+        "    If (dst, dport) is permitted by allow_rules, record state so the\n",
+        "    matching return traffic will be permitted automatically.\"\"\"\n",
+        "    key = (packet[\"dst\"], packet[\"dport\"])\n",
+        "    if key in allow_rules:\n",
+        "        state_table[(packet[\"src\"], packet[\"sport\"], packet[\"dst\"], packet[\"dport\"])] = \"ESTABLISHED\"\n",
+        "        return \"allow\"\n",
+        "    return \"deny\"\n",
+        "\n",
+        "def handle_inbound_packet(packet, state_table):\n",
+        "    \"\"\"packet: {\"src\",\"sport\",\"dst\",\"dport\"} inbound packet claiming to be\n",
+        "    a response. Only allowed if it matches an existing state-table entry\n",
+        "    for the original outbound connection (reversed direction).\"\"\"\n",
+        "    key = (packet[\"dst\"], packet[\"dport\"], packet[\"src\"], packet[\"sport\"])\n",
+        "    if key in state_table:\n",
+        "        return \"allow\"\n",
+        "    return \"deny\""
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def test_experiment2():\n",
+        "    state_table = {}\n",
+        "    allow_rules = {(\"93.184.216.34\", 443)}\n",
+        "    outbound = {\"src\": \"10.0.0.20\", \"sport\": 51000, \"dst\": \"93.184.216.34\", \"dport\": 443}\n",
+        "    assert handle_outbound_syn(outbound, state_table, allow_rules) == \"allow\"\n",
+        "    assert (outbound[\"src\"], outbound[\"sport\"], outbound[\"dst\"], outbound[\"dport\"]) in state_table\n",
+        "    # Legitimate return traffic (src/dst reversed) is allowed automatically\n",
+        "    response = {\"src\": \"93.184.216.34\", \"sport\": 443, \"dst\": \"10.0.0.20\", \"dport\": 51000}\n",
+        "    assert handle_inbound_packet(response, state_table) == \"allow\"\n",
+        "    # Unsolicited inbound packet with no matching state is denied\n",
+        "    unsolicited = {\"src\": \"203.0.113.9\", \"sport\": 4444, \"dst\": \"10.0.0.20\", \"dport\": 51000}\n",
+        "    assert handle_inbound_packet(unsolicited, state_table) == \"deny\"\n",
+        "    print(\"All test cases passed.\")\n",
+        "test_experiment2()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "0AhgcjMfkrtt",
+        "outputId": "89fef385-b31f-432f-9276-3c03d03b13ab"
+      },
+      "execution_count": 4,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "All test cases passed.\n"
+          ]
+        }
+      ]
+    }
+  ]
+}
