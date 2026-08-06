@@ -1,0 +1,106 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyOLu6Un+jHPi1EDmL96DpQI",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/sreepavithra04/CSA6301/blob/main/EXP%2026\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 3,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "xbQ2DymIg12Y",
+        "outputId": "d6ae44e9-e126-4c78-a247-c1e2c1cf9f7d"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "search source=auth action=login_failed -> [{'_time': '09:17', 'source': 'auth', 'user': 'jdoe', 'action': 'login_failed'}, {'_time': '09:18', 'source': 'auth', 'user': 'jdoe', 'action': 'login_failed'}]\n",
+            "stats count by source -> {'auth': 4, 'firewall': 1}\n"
+          ]
+        }
+      ],
+      "source": [
+        "splunk_index = [\n",
+        "{\"_time\": \"09:15\", \"source\": \"auth\", \"user\": \"jdoe\", \"action\":\n",
+        "\"login_success\"},\n",
+        "{\"_time\": \"09:17\", \"source\": \"auth\", \"user\": \"jdoe\", \"action\": \"login_failed\"},\n",
+        "{\"_time\": \"09:18\", \"source\": \"auth\", \"user\": \"jdoe\", \"action\": \"login_failed\"},\n",
+        "{\"_time\": \"09:20\", \"source\": \"firewall\", \"ip\": \"45.33.32.156\", \"action\":\n",
+        "\"blocked\"},\n",
+        "{\"_time\": \"09:21\", \"source\": \"auth\", \"user\": \"asmith\", \"action\":\n",
+        "\"login_success\"},\n",
+        "]\n",
+        "def spl_search(index, **filters):\n",
+        "    results = index\n",
+        "    for field, value in filters.items():\n",
+        "        results = [r for r in results if r.get(field) == value]\n",
+        "    return results\n",
+        "def spl_stats_count_by(index, field):\n",
+        "    counts = {}\n",
+        "    for r in index:\n",
+        "        key = r.get(field, \"unknown\")\n",
+        "        counts[key] = counts.get(key, 0) + 1\n",
+        "    return counts\n",
+        "failed_logins = spl_search(splunk_index, source=\"auth\", action=\"login_failed\")\n",
+        "counts_by_source = spl_stats_count_by(splunk_index, \"source\")\n",
+        "print('search source=auth action=login_failed ->', failed_logins)\n",
+        "print('stats count by source ->', counts_by_source)"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def test_experiment8():\n",
+        "    assert len(failed_logins) == 2\n",
+        "    assert all(r[\"user\"] == \"jdoe\" for r in failed_logins)\n",
+        "    assert counts_by_source == {\"auth\": 4, \"firewall\": 1}\n",
+        "    print(\"Experiment 8: All test cases passed.\")\n",
+        "test_experiment8()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "ccOperRag9qc",
+        "outputId": "6d1ec9d8-21eb-426c-a42c-1e925eb34c8d"
+      },
+      "execution_count": 4,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Experiment 8: All test cases passed.\n"
+          ]
+        }
+      ]
+    }
+  ]
+}
