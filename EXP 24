@@ -1,0 +1,114 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyM7cjaonNYySCtW1Kzb8fT3",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/sreepavithra04/CSA6301/blob/main/EXP%2024\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "E7PkASljhT0R",
+        "outputId": "178d4e9b-eee2-48d0-e304-3e88e765f9fb"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Stream length: 22 | Flags raised: 2\n",
+            "{'event': {'hour': 3, 'failed_logins': 0}, 'reasons': ['off-hours activity']}\n",
+            "{'event': {'hour': 10, 'failed_logins': 9}, 'reasons': ['excessive failed logins']}\n"
+          ]
+        }
+      ],
+      "source": [
+        "import random\n",
+        "\n",
+        "random.seed(42)\n",
+        "def generate_event_stream(n=20):\n",
+        "    stream = []\n",
+        "    for _ in range(n):\n",
+        "        stream.append({\n",
+        "            \"hour\": random.choice([9, 10, 11, 14, 15, 16]), # normal business hours\n",
+        "            \"failed_logins\": random.choice([0, 0, 0, 1]),\n",
+        "        })\n",
+        "    # inject 2 known anomalies\n",
+        "    stream.append({\"hour\": 3, \"failed_logins\": 0})\n",
+        "    stream.append({\"hour\": 10, \"failed_logins\": 9})\n",
+        "    return stream\n",
+        "\n",
+        "def monitor_stream(stream):\n",
+        "    flags = []\n",
+        "    for event in stream:\n",
+        "        reasons = []\n",
+        "        if event[\"hour\"] < 6 or event[\"hour\"] > 22:\n",
+        "            reasons.append(\"off-hours activity\")\n",
+        "        if event[\"failed_logins\"] >= 5:\n",
+        "            reasons.append(\"excessive failed logins\")\n",
+        "        if reasons:\n",
+        "            flags.append({\"event\": event, \"reasons\": reasons})\n",
+        "    return flags\n",
+        "\n",
+        "event_stream = generate_event_stream()\n",
+        "flags = monitor_stream(event_stream)\n",
+        "print(f\"Stream length: {len(event_stream)} | Flags raised: {len(flags)}\")\n",
+        "for f in flags:\n",
+        "    print(f)"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def test_experiment6():\n",
+        "    assert len(flags) == 2, \"Exactly the 2 injected anomalies should be flagged\"\n",
+        "    assert any(\"off-hours activity\" in f[\"reasons\"] for f in flags)\n",
+        "    assert any(\"excessive failed logins\" in f[\"reasons\"] for f in flags)\n",
+        "    print(\"Experiment 6: All test cases passed.\")\n",
+        "test_experiment6()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "zmZjRo_dhZ1u",
+        "outputId": "c19e382a-ba47-41a9-e393-af1ee567d1eb"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Experiment 6: All test cases passed.\n"
+          ]
+        }
+      ]
+    }
+  ]
+}
