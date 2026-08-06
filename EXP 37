@@ -1,0 +1,103 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyND5ZB6z89iiIbGelR14wfY",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/sreepavithra04/CSA6301/blob/main/EXP%2037\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 3,
+      "metadata": {
+        "id": "uAxJaT7snLYT"
+      },
+      "outputs": [],
+      "source": [
+        "def simulate_defense(attack, layers):\n",
+        "    \"\"\"layers: ordered list of (layer_name, catch_function). catch_function\n",
+        "    receives the attack dict and returns True if that layer stops it.\n",
+        "    Returns the name of the first layer that catches the attack, or\n",
+        "    'BREACH' if it passes through every layer undetected.\"\"\"\n",
+        "    for layer_name, catch_fn in layers:\n",
+        "        if catch_fn(attack):\n",
+        "            return layer_name\n",
+        "    return \"BREACH\"\n",
+        "def spam_filter_catches(attack):\n",
+        "    return attack.get(\"known_phishing_domain\", False)\n",
+        "def endpoint_av_catches(attack):\n",
+        "    return attack.get(\"known_malware_hash\", False)\n",
+        "def segmentation_catches(attack):\n",
+        "    return attack.get(\"attempts_lateral_movement\", False) and not attack.get(\"segmentation_bypassed\", False)\n",
+        "def siem_monitoring_catches(attack):\n",
+        "    return attack.get(\"generates_anomalous_traffic\", False)"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def test_experiment9():\n",
+        "    layers = [\n",
+        "        (\"Email Spam Filter\", spam_filter_catches),\n",
+        "        (\"Endpoint Antivirus\", endpoint_av_catches),\n",
+        "        (\"Network Segmentation\", segmentation_catches),\n",
+        "        (\"SIEM Monitoring\", siem_monitoring_catches),\n",
+        "    ]\n",
+        "    # Phishing email evades the spam filter (unknown domain), but AV catches the attachment\n",
+        "    attack1 = {\"known_phishing_domain\": False, \"known_malware_hash\": True}\n",
+        "    assert simulate_defense(attack1, layers) == \"Endpoint Antivirus\"\n",
+        "    # Evades spam filter and AV, but is caught while attempting lateral movement\n",
+        "    attack2 = {\n",
+        "    \"known_phishing_domain\": False, \"known_malware_hash\": False,\n",
+        "    \"attempts_lateral_movement\": True, \"segmentation_bypassed\": False,\n",
+        "    }\n",
+        "    assert simulate_defense(attack2, layers) == \"Network Segmentation\"\n",
+        "    # Evades every layer entirely\n",
+        "    attack3 = {\n",
+        "    \"known_phishing_domain\": False, \"known_malware_hash\": False,\n",
+        "    \"attempts_lateral_movement\": False, \"generates_anomalous_traffic\": False,\n",
+        "    }\n",
+        "    assert simulate_defense(attack3, layers) == \"BREACH\"\n",
+        "    print(\"All test cases passed.\")\n",
+        "test_experiment9()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "ArtJSN60naPD",
+        "outputId": "f94fff9e-7126-4ed7-fe59-345b31b0ea4e"
+      },
+      "execution_count": 4,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "All test cases passed.\n"
+          ]
+        }
+      ]
+    }
+  ]
+}
