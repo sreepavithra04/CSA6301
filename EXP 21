@@ -1,0 +1,118 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyPm3Cg+LL2v5jDmSIJVATSg",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/sreepavithra04/CSA6301/blob/main/EXP%2021\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 3,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "g7eQGx7Xi9rR",
+        "outputId": "f6926153-b10f-43e7-d056-85eae7674215"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Hypothesis-based hits: [{'process': 'powershell.exe', 'args': '-enc SGVsbG8=', 'user': 'svc_admin'}, {'process': 'powershell.exe', 'args': '-nop -w hidden -enc ZXZpbA==', 'user': 'jdoe'}]\n",
+            "Intelligence-based hits: [{'ip': '45.33.32.156'}, {'ip': '185.220.101.1'}]\n",
+            "Analytics-based result: {'z_score': 9.62, 'anomalous': True}\n"
+          ]
+        }
+      ],
+      "source": [
+        "import statistics\n",
+        "\n",
+        "# Hypothesis-based: \"attackers may use encoded PowerShell commands\"\n",
+        "execution_logs = [\n",
+        "{\"process\": \"powershell.exe\", \"args\": \"-enc SGVsbG8=\", \"user\": \"svc_admin\"},\n",
+        "{\"process\": \"notepad.exe\", \"args\": \"\", \"user\": \"jdoe\"},\n",
+        "{\"process\": \"powershell.exe\", \"args\": \"-nop -w hidden -enc ZXZpbA==\", \"user\":\n",
+        "\"jdoe\"},\n",
+        "]\n",
+        "def hypothesis_hunt_powershell(logs):\n",
+        "    return [l for l in logs if l[\"process\"] == \"powershell.exe\" and \"-enc\" in l[\"args\"]]\n",
+        "# Intelligence-based: match connections against a known-malicious-IP feed\n",
+        "connection_logs = [{\"ip\": \"45.33.32.156\"}, {\"ip\": \"8.8.8.8\"}, {\"ip\":\n",
+        "\"185.220.101.1\"}]\n",
+        "known_malicious_ips = {\"45.33.32.156\", \"185.220.101.1\"}\n",
+        "def intelligence_hunt(logs, feed):\n",
+        "    return [l for l in logs if l[\"ip\"] in feed]\n",
+        "# Analytics-based: flag a login hour that deviates far from the user's normal\n",
+        "# pattern\n",
+        "login_hours_history = [9, 9, 10, 9, 8, 9, 10]\n",
+        "new_login_hour = 3\n",
+        "def analytics_hunt(history, new_value, threshold=2.0):\n",
+        "    mean = statistics.mean(history)\n",
+        "    stdev = statistics.pstdev(history) or 1\n",
+        "    z = abs(new_value - mean) / stdev\n",
+        "    return {\"z_score\": round(z, 2), \"anomalous\": z > threshold}\n",
+        "hyp_result = hypothesis_hunt_powershell(execution_logs)\n",
+        "intel_result = intelligence_hunt(connection_logs, known_malicious_ips)\n",
+        "analytics_result = analytics_hunt(login_hours_history, new_login_hour)\n",
+        "print(\"Hypothesis-based hits:\", hyp_result)\n",
+        "print(\"Intelligence-based hits:\", intel_result)\n",
+        "print(\"Analytics-based result:\", analytics_result)"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def test_experiment3():\n",
+        "    assert len(hyp_result) == 2, \"\"\"Both encoded PowerShell executions should be\n",
+        "flagged\"\"\"\n",
+        "    assert all(r[\"process\"] == \"powershell.exe\" for r in hyp_result)\n",
+        "\n",
+        "    assert len(intel_result) == 2, \"Both known-malicious IPs should be matched\"\n",
+        "    assert analytics_result[\"anomalous\"] is True, \"\"\"A 3 AM login should be anomalous\n",
+        "against an 8-10 AM history\"\"\"\n",
+        "    print(\"Experiment 3: All test cases passed.\")\n",
+        "test_experiment3()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "cUSP-tm1jGoM",
+        "outputId": "c922c0cb-8372-4854-ea01-edd8445da889"
+      },
+      "execution_count": 5,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Experiment 3: All test cases passed.\n"
+          ]
+        }
+      ]
+    }
+  ]
+}
