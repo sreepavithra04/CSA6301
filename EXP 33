@@ -1,0 +1,81 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyOZe6Jd80AENoygI7Ia1hZb",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/sreepavithra04/CSA6301/blob/main/EXP%2033\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 3,
+      "metadata": {
+        "id": "CwSw9-aclkOc"
+      },
+      "outputs": [],
+      "source": [
+        "def xor_cipher(data: bytes, key: bytes) -> bytes:\n",
+        "    return bytes(b ^ key[i % len(key)] for i, b in enumerate(data))\n",
+        "def encrypt_tunnel(plaintext: str, key: str) -> bytes:\n",
+        "    return xor_cipher(plaintext.encode(), key.encode())\n",
+        "def decrypt_tunnel(ciphertext: bytes, key: str) -> str:\n",
+        "    return xor_cipher(ciphertext, key.encode()).decode(errors=\"replace\")"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def test_experiment5():\n",
+        "    key = \"VPN-Shared-Secret-Key\"\n",
+        "    plaintext = \"Transfer $50,000 to account 998211 - confidential\"\n",
+        "    ciphertext = encrypt_tunnel(plaintext, key)\n",
+        "    assert ciphertext != plaintext.encode()\n",
+        "    assert b\"Transfer\" not in ciphertext, \"Sensitive plaintext must not be visible in captured tunnel data\"\n",
+        "    recovered = decrypt_tunnel(ciphertext, key)\n",
+        "    assert recovered == plaintext\n",
+        "    # Wrong key must NOT recover the original plaintext\n",
+        "    wrong_recovered = decrypt_tunnel(ciphertext, \"Wrong-Key\")\n",
+        "    assert wrong_recovered != plaintext\n",
+        "    print(\"All test cases passed.\")\n",
+        "test_experiment5()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "LNAsopi0lqT6",
+        "outputId": "2fafbd46-7eab-4e18-d8ce-ea8e4f706c57"
+      },
+      "execution_count": 4,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "All test cases passed.\n"
+          ]
+        }
+      ]
+    }
+  ]
+}
