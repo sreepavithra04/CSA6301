@@ -1,0 +1,98 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyOk6L9saRvkLXb6nSv9mio8",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/sreepavithra04/CSA6301/blob/main/EXP%2029\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 3,
+      "metadata": {
+        "id": "Qk2gzLw_kYZm"
+      },
+      "outputs": [],
+      "source": [
+        "def rule_matches(packet, rule):\n",
+        "    def field_ok(value, rule_value):\n",
+        "        return rule_value == \"any\" or value == rule_value\n",
+        "    return (\n",
+        "        field_ok(packet[\"src\"], rule[\"src\"])\n",
+        "        and field_ok(packet[\"dst\"], rule[\"dst\"])\n",
+        "        and field_ok(packet[\"port\"], rule[\"port\"])\n",
+        "        and field_ok(packet[\"proto\"], rule[\"proto\"])\n",
+        "    )\n",
+        "def evaluate_packet(packet, rules):\n",
+        "    \"\"\"Return the action of the first matching rule (top-down), or\n",
+        "    'deny' if no rule matches (default-deny).\"\"\"\n",
+        "    for rule in rules:\n",
+        "        if rule_matches(packet, rule):\n",
+        "            return rule[\"action\"]\n",
+        "    return \"deny\""
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def test_experiment1():\n",
+        "    # Misconfigured order: a broad allow placed before a specific deny\n",
+        "    misordered_rules = [\n",
+        "        {\"action\": \"allow\", \"src\": \"any\", \"dst\": \"any\", \"port\": \"any\", \"proto\": \"any\"},\n",
+        "        {\"action\": \"deny\", \"src\": \"10.0.0.5\", \"dst\": \"any\", \"port\": \"any\", \"proto\": \"any\"},\n",
+        "    ]\n",
+        "    packet = {\"src\": \"10.0.0.5\", \"dst\": \"8.8.8.8\", \"port\": 443, \"proto\": \"tcp\"}\n",
+        "    # BUG: Rule 1 matches everything and comes first, so the deny never triggers\n",
+        "    assert evaluate_packet(packet, misordered_rules) == \"allow\"\n",
+        "    # Fixed order: specific deny placed before the broad allow\n",
+        "    fixed_rules = [\n",
+        "        {\"action\": \"deny\", \"src\": \"10.0.0.5\", \"dst\": \"any\", \"port\": \"any\", \"proto\": \"any\"},\n",
+        "        {\"action\": \"allow\", \"src\": \"any\", \"dst\": \"any\", \"port\": \"any\", \"proto\": \"any\"},\n",
+        "    ]\n",
+        "    assert evaluate_packet(packet, fixed_rules) == \"deny\"\n",
+        "    # Default-deny: no rule matches an unrelated packet\n",
+        "    other_packet = {\"src\": \"192.168.1.9\", \"dst\": \"1.1.1.1\", \"port\": 53, \"proto\": \"udp\"}\n",
+        "    assert evaluate_packet(other_packet, []) == \"deny\"\n",
+        "    print(\"All test cases passed.\")\n",
+        "test_experiment1()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "SDyJyOsPkcjJ",
+        "outputId": "cb493b91-dfe7-41bc-e738-d01c7cd3d5e8"
+      },
+      "execution_count": 4,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "All test cases passed.\n"
+          ]
+        }
+      ]
+    }
+  ]
+}
