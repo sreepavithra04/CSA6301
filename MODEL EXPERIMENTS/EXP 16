@@ -1,0 +1,128 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyPAyoS+dysm6uCld0XjeNQ6",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/sreepavithra04/CSA6301/blob/main/MODEL%20EXPERIMENTS/EXP%2016\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 1,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "zgWTQhdfI1Ot",
+        "outputId": "4c0e69f6-977a-4bea-d2b0-9627844fa7ba"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "DEFENSE-IN-DEPTH SIMULATION\n",
+            "==================================================\n",
+            "\n",
+            "Security Layer: Firewall\n",
+            "Result: Attack passed through\n",
+            "\n",
+            "Security Layer: Network IDS\n",
+            "Result: ATTACK BLOCKED\n",
+            "\n",
+            "Final Result:\n",
+            "Attack stopped at Network IDS\n",
+            "\n",
+            "Defense-in-Depth successfully protected the system.\n"
+          ]
+        }
+      ],
+      "source": [
+        "# Program 16: Defense-in-Depth Simulation\n",
+        "\n",
+        "# -----------------------------------------\n",
+        "# Security Layers\n",
+        "# -----------------------------------------\n",
+        "\n",
+        "security_layers = [\n",
+        "    \"Firewall\",\n",
+        "    \"Network IDS\",\n",
+        "    \"Endpoint Protection\",\n",
+        "    \"Authentication\",\n",
+        "    \"Application Security\"\n",
+        "]\n",
+        "\n",
+        "\n",
+        "# -----------------------------------------\n",
+        "# Simulated Attack\n",
+        "# -----------------------------------------\n",
+        "\n",
+        "attack = {\n",
+        "    \"Firewall\": False,\n",
+        "    \"Network IDS\": True,\n",
+        "    \"Endpoint Protection\": True,\n",
+        "    \"Authentication\": True,\n",
+        "    \"Application Security\": True\n",
+        "}\n",
+        "\n",
+        "\n",
+        "print(\"DEFENSE-IN-DEPTH SIMULATION\")\n",
+        "print(\"=\" * 50)\n",
+        "\n",
+        "attack_blocked = False\n",
+        "\n",
+        "for layer in security_layers:\n",
+        "\n",
+        "    print(\"\\nSecurity Layer:\", layer)\n",
+        "\n",
+        "    if attack[layer]:\n",
+        "\n",
+        "        print(\"Result: ATTACK BLOCKED\")\n",
+        "        attack_blocked = True\n",
+        "\n",
+        "        print(\"\\nFinal Result:\")\n",
+        "        print(\"Attack stopped at\", layer)\n",
+        "\n",
+        "        break\n",
+        "\n",
+        "    else:\n",
+        "\n",
+        "        print(\"Result: Attack passed through\")\n",
+        "\n",
+        "\n",
+        "# -----------------------------------------\n",
+        "# Final Result\n",
+        "# -----------------------------------------\n",
+        "\n",
+        "if not attack_blocked:\n",
+        "\n",
+        "    print(\"\\nFinal Result:\")\n",
+        "    print(\"WARNING: Attack passed through all layers.\")\n",
+        "\n",
+        "else:\n",
+        "\n",
+        "    print(\"\\nDefense-in-Depth successfully protected the system.\")"
+      ]
+    }
+  ]
+}
