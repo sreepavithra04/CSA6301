@@ -1,0 +1,118 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyOyyQ6T8LLbFobXKoepkuBH",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/sreepavithra04/CSA6301/blob/main/MODEL%20EXPERIMENTS/EXP%204\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 1,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "qE6m4cfqCblo",
+        "outputId": "67c9d9b5-bed2-4573-f0ba-efd85352e886"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Enter message to send through VPN: Enter message to send through VPN: Bank transaction approved Enter shared secret key: cyber123\n",
+            "Enter shared secret key: 123\n",
+            "\n",
+            "Original Data:\n",
+            "Enter message to send through VPN: Bank transaction approved Enter shared secret key: cyber123\n",
+            "\n",
+            "Captured Data in Transit:\n",
+            "'t\\\\GT@\\x13\\\\W@BSTT\\x12G^\\x12@T\\\\W\\x11F[C]FVZ\\x13gb}\\x0b\\x12qP\\\\X\\x11FAP\\\\@PQGX]]\\x11SCA@\\\\GWW\\x11w]EWA\\x11A[P@VU\\x12@TQATF\\x13ZWJ\\x0b\\x12PHPVC\\x03\\x01\\x02'\n",
+            "\n",
+            "Enter an incorrect key to demonstrate confidentiality: cyber123\n",
+            "\n",
+            "Decryption using incorrect key:\n",
+            "\u0017%%12\"nd#;11&#umq969% th $$3(\"UQ\u001erp\u0014\"mj\"%8292act;$?t!rss?>52cFov48s$)are6k\"1#pfup#5/y#b{3/!fs3\n",
+            "\n",
+            "Decryption using correct shared key:\n",
+            "Enter message to send through VPN: Bank transaction approved Enter shared secret key: cyber123\n",
+            "\n",
+            "Result: Confidentiality successfully demonstrated.\n"
+          ]
+        }
+      ],
+      "source": [
+        "# Program 4: VPN Confidentiality Demonstration\n",
+        "# Simple XOR stream cipher used only as an educational example\n",
+        "\n",
+        "def xor_encrypt(data, key):\n",
+        "    encrypted = \"\"\n",
+        "\n",
+        "    for i, char in enumerate(data):\n",
+        "        encrypted += chr(\n",
+        "            ord(char) ^ ord(key[i % len(key)])\n",
+        "        )\n",
+        "\n",
+        "    return encrypted\n",
+        "\n",
+        "\n",
+        "def xor_decrypt(data, key):\n",
+        "    return xor_encrypt(data, key)\n",
+        "\n",
+        "\n",
+        "# Original message\n",
+        "message = input(\"Enter message to send through VPN: \")\n",
+        "\n",
+        "# Shared secret key\n",
+        "key = input(\"Enter shared secret key: \")\n",
+        "\n",
+        "# Encrypt the message\n",
+        "encrypted_data = xor_encrypt(message, key)\n",
+        "\n",
+        "print(\"\\nOriginal Data:\")\n",
+        "print(message)\n",
+        "\n",
+        "print(\"\\nCaptured Data in Transit:\")\n",
+        "print(repr(encrypted_data))\n",
+        "\n",
+        "# Try to decrypt with wrong key\n",
+        "wrong_key = input(\"\\nEnter an incorrect key to demonstrate confidentiality: \")\n",
+        "\n",
+        "wrong_decrypted = xor_decrypt(encrypted_data, wrong_key)\n",
+        "\n",
+        "print(\"\\nDecryption using incorrect key:\")\n",
+        "print(wrong_decrypted)\n",
+        "\n",
+        "# Correct decryption\n",
+        "decrypted_data = xor_decrypt(encrypted_data, key)\n",
+        "\n",
+        "print(\"\\nDecryption using correct shared key:\")\n",
+        "print(decrypted_data)\n",
+        "\n",
+        "if decrypted_data == message:\n",
+        "    print(\"\\nResult: Confidentiality successfully demonstrated.\")"
+      ]
+    }
+  ]
+}
