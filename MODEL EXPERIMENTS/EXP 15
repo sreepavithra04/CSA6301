@@ -1,0 +1,156 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyPyAHJM55d5UwWkba9LnqnR",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/sreepavithra04/CSA6301/blob/main/MODEL%20EXPERIMENTS/EXP%2015\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "RO3G1pkcIp_S",
+        "outputId": "0bfe6449-4a22-4886-ac9a-d21c670ba6b8"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Enter the security incident case study:\n",
+            "An employee received a fake email containing a malicious login page. The employee entered their corporate credentials.\n",
+            "\n",
+            "Root Cause Assessment\n",
+            "==================================================\n",
+            "Phishing: 2\n",
+            "Unpatched Vulnerability: 0\n",
+            "Misconfiguration: 0\n",
+            "Insider Threat: 1\n",
+            "Supply-Chain Compromise: 0\n",
+            "\n",
+            "Most Likely Root Cause:\n",
+            "Phishing\n"
+          ]
+        }
+      ],
+      "source": [
+        "# Program 15: Security Incident Root-Cause Classification\n",
+        "\n",
+        "def classify_root_cause(narrative):\n",
+        "\n",
+        "    text = narrative.lower()\n",
+        "\n",
+        "    categories = {\n",
+        "\n",
+        "        \"Phishing\": [\n",
+        "            \"phishing\",\n",
+        "            \"fake email\",\n",
+        "            \"malicious email\",\n",
+        "            \"credential\",\n",
+        "            \"fake login page\",\n",
+        "            \"social engineering\"\n",
+        "        ],\n",
+        "\n",
+        "        \"Unpatched Vulnerability\": [\n",
+        "            \"unpatched\",\n",
+        "            \"vulnerability\",\n",
+        "            \"missing patch\",\n",
+        "            \"outdated software\",\n",
+        "            \"security patch\",\n",
+        "            \"known vulnerability\",\n",
+        "            \"cve\"\n",
+        "        ],\n",
+        "\n",
+        "        \"Misconfiguration\": [\n",
+        "            \"misconfiguration\",\n",
+        "            \"incorrect configuration\",\n",
+        "            \"open port\",\n",
+        "            \"default password\",\n",
+        "            \"publicly exposed\",\n",
+        "            \"wrong permission\",\n",
+        "            \"configuration error\"\n",
+        "        ],\n",
+        "\n",
+        "        \"Insider Threat\": [\n",
+        "            \"employee\",\n",
+        "            \"insider\",\n",
+        "            \"disgruntled employee\",\n",
+        "            \"employee stole\",\n",
+        "            \"unauthorized employee\",\n",
+        "            \"internal user\"\n",
+        "        ],\n",
+        "\n",
+        "        \"Supply-Chain Compromise\": [\n",
+        "            \"third-party\",\n",
+        "            \"supplier\",\n",
+        "            \"vendor\",\n",
+        "            \"supply chain\",\n",
+        "            \"software update\",\n",
+        "            \"compromised dependency\",\n",
+        "            \"vendor compromise\"\n",
+        "        ]\n",
+        "    }\n",
+        "\n",
+        "    scores = {}\n",
+        "\n",
+        "    for category, keywords in categories.items():\n",
+        "\n",
+        "        scores[category] = sum(\n",
+        "            keyword in text\n",
+        "            for keyword in keywords\n",
+        "        )\n",
+        "\n",
+        "    best_category = max(\n",
+        "        scores,\n",
+        "        key=scores.get\n",
+        "    )\n",
+        "\n",
+        "    if scores[best_category] == 0:\n",
+        "        return \"Unknown / Unable to classify\", scores\n",
+        "\n",
+        "    return best_category, scores\n",
+        "\n",
+        "\n",
+        "# User input\n",
+        "narrative = input(\n",
+        "    \"Enter the security incident case study:\\n\"\n",
+        ")\n",
+        "\n",
+        "result, scores = classify_root_cause(narrative)\n",
+        "\n",
+        "print(\"\\nRoot Cause Assessment\")\n",
+        "print(\"=\" * 50)\n",
+        "\n",
+        "for category, score in scores.items():\n",
+        "    print(f\"{category}: {score}\")\n",
+        "\n",
+        "print(\"\\nMost Likely Root Cause:\")\n",
+        "print(result)"
+      ]
+    }
+  ]
+}
