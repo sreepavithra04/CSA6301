@@ -1,0 +1,154 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyNBReBjXgU6Sp/gIKQJ1r3W",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/sreepavithra04/CSA6301/blob/main/MODEL%20EXPERIMENTS/EXP%206\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 1,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "i_LBD_PuEQhy",
+        "outputId": "a0b5d8d7-45a9-4965-c2c8-35a6f676c8ee"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Enter URL to check: http://192.168.1.10/login/verify/account\n",
+            "\n",
+            "Phishing URL Assessment\n",
+            "========================================\n",
+            "Risk Score: 8\n",
+            "Result: HIGH RISK - Possible Phishing URL\n",
+            "\n",
+            "Indicators:\n",
+            "- Suspicious keyword: login\n",
+            "- Suspicious keyword: verify\n",
+            "- Suspicious keyword: account\n",
+            "- IP address used instead of domain name\n",
+            "- Excessive number of subdomains\n"
+          ]
+        }
+      ],
+      "source": [
+        "# Program 6: Phishing URL Detection\n",
+        "\n",
+        "import re\n",
+        "from urllib.parse import urlparse\n",
+        "\n",
+        "def check_phishing_url(url):\n",
+        "\n",
+        "    score = 0\n",
+        "    indicators = []\n",
+        "\n",
+        "    # Suspicious keywords\n",
+        "    suspicious_keywords = [\n",
+        "        \"login\", \"verify\", \"update\", \"secure\",\n",
+        "        \"account\", \"password\", \"confirm\",\n",
+        "        \"bank\", \"signin\", \"free\", \"urgent\"\n",
+        "    ]\n",
+        "\n",
+        "    url_lower = url.lower()\n",
+        "\n",
+        "    for keyword in suspicious_keywords:\n",
+        "        if keyword in url_lower:\n",
+        "            score += 1\n",
+        "            indicators.append(\"Suspicious keyword: \" + keyword)\n",
+        "\n",
+        "    # Check if URL uses IP address instead of domain\n",
+        "    parsed = urlparse(url)\n",
+        "    hostname = parsed.hostname\n",
+        "\n",
+        "    if hostname:\n",
+        "        ip_pattern = r\"^\\d{1,3}(\\.\\d{1,3}){3}$\"\n",
+        "\n",
+        "        if re.match(ip_pattern, hostname):\n",
+        "            score += 3\n",
+        "            indicators.append(\"IP address used instead of domain name\")\n",
+        "\n",
+        "        # Excessive subdomains\n",
+        "        subdomain_count = len(hostname.split(\".\"))\n",
+        "\n",
+        "        if subdomain_count > 3:\n",
+        "            score += 2\n",
+        "            indicators.append(\"Excessive number of subdomains\")\n",
+        "\n",
+        "    # @ symbol\n",
+        "    if \"@\" in url:\n",
+        "        score += 2\n",
+        "        indicators.append(\"'@' symbol found in URL\")\n",
+        "\n",
+        "    # Very long URL\n",
+        "    if len(url) > 100:\n",
+        "        score += 1\n",
+        "        indicators.append(\"Unusually long URL\")\n",
+        "\n",
+        "    # URL shortening services\n",
+        "    shorteners = [\n",
+        "        \"bit.ly\", \"tinyurl.com\", \"t.co\",\n",
+        "        \"goo.gl\", \"ow.ly\"\n",
+        "    ]\n",
+        "\n",
+        "    if hostname and hostname.lower() in shorteners:\n",
+        "        score += 2\n",
+        "        indicators.append(\"URL shortening service detected\")\n",
+        "\n",
+        "    # Result\n",
+        "    if score >= 5:\n",
+        "        result = \"HIGH RISK - Possible Phishing URL\"\n",
+        "    elif score >= 3:\n",
+        "        result = \"MEDIUM RISK - Suspicious URL\"\n",
+        "    else:\n",
+        "        result = \"LOW RISK - No major phishing indicators\"\n",
+        "\n",
+        "    return score, indicators, result\n",
+        "\n",
+        "\n",
+        "# User input\n",
+        "url = input(\"Enter URL to check: \")\n",
+        "\n",
+        "score, indicators, result = check_phishing_url(url)\n",
+        "\n",
+        "print(\"\\nPhishing URL Assessment\")\n",
+        "print(\"=\" * 40)\n",
+        "print(\"Risk Score:\", score)\n",
+        "print(\"Result:\", result)\n",
+        "\n",
+        "print(\"\\nIndicators:\")\n",
+        "\n",
+        "if indicators:\n",
+        "    for indicator in indicators:\n",
+        "        print(\"-\", indicator)\n",
+        "else:\n",
+        "    print(\"No suspicious indicators detected.\")"
+      ]
+    }
+  ]
+}
