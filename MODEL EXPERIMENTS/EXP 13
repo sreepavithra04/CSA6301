@@ -1,0 +1,127 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyM2AL+Rh6X0egGtpDjMXPLS",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/sreepavithra04/CSA6301/blob/main/MODEL%20EXPERIMENTS/EXP%2013\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Program 13: Threat Intelligence Assessment\n",
+        "\n",
+        "def assess_threat_intelligence(data):\n",
+        "\n",
+        "    text = data.lower()\n",
+        "\n",
+        "    # Keywords indicating context\n",
+        "    context_keywords = [\n",
+        "        \"target\", \"campaign\", \"threat actor\",\n",
+        "        \"organization\", \"sector\", \"affected\",\n",
+        "        \"context\", \"attack\"\n",
+        "    ]\n",
+        "\n",
+        "    # Keywords indicating confidence\n",
+        "    confidence_keywords = [\n",
+        "        \"confidence\", \"high confidence\",\n",
+        "        \"medium confidence\", \"low confidence\",\n",
+        "        \"verified\", \"confirmed\", \"likely\"\n",
+        "    ]\n",
+        "\n",
+        "    # Keywords indicating actionability\n",
+        "    action_keywords = [\n",
+        "        \"block\", \"monitor\", \"patch\",\n",
+        "        \"investigate\", \"mitigate\", \"action\",\n",
+        "        \"recommend\", \"prevent\", \"response\"\n",
+        "    ]\n",
+        "\n",
+        "    has_context = any(\n",
+        "        word in text for word in context_keywords\n",
+        "    )\n",
+        "\n",
+        "    has_confidence = any(\n",
+        "        word in text for word in confidence_keywords\n",
+        "    )\n",
+        "\n",
+        "    has_actionability = any(\n",
+        "        word in text for word in action_keywords\n",
+        "    )\n",
+        "\n",
+        "    print(\"\\nThreat Intelligence Assessment\")\n",
+        "    print(\"=\" * 50)\n",
+        "\n",
+        "    print(\"Context:\", \"Present\" if has_context else \"Missing\")\n",
+        "    print(\"Confidence:\", \"Present\" if has_confidence else \"Missing\")\n",
+        "    print(\"Actionability:\",\n",
+        "          \"Present\" if has_actionability else \"Missing\")\n",
+        "\n",
+        "    # Final classification\n",
+        "    if has_context and has_confidence and has_actionability:\n",
+        "\n",
+        "        print(\"\\nClassification:\")\n",
+        "        print(\"GENUINE THREAT INTELLIGENCE\")\n",
+        "\n",
+        "    else:\n",
+        "\n",
+        "        print(\"\\nClassification:\")\n",
+        "        print(\"RAW / UNPROCESSED DATA\")\n",
+        "\n",
+        "\n",
+        "# Input\n",
+        "data = input(\n",
+        "    \"Enter the collected security information:\\n\"\n",
+        ")\n",
+        "\n",
+        "assess_threat_intelligence(data)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "rrfq-Kk4H-Ga",
+        "outputId": "70181b3a-1931-4d69-84fe-bc787869b726"
+      },
+      "execution_count": 2,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Enter the collected security information:\n",
+            "A ransomware group is targeting healthcare organizations. The assessment has high confidence based on verified sources. Security teams should block the indicators and monitor affected systems.\n",
+            "\n",
+            "Threat Intelligence Assessment\n",
+            "==================================================\n",
+            "Context: Present\n",
+            "Confidence: Present\n",
+            "Actionability: Present\n",
+            "\n",
+            "Classification:\n",
+            "GENUINE THREAT INTELLIGENCE\n"
+          ]
+        }
+      ]
+    }
+  ]
+}
