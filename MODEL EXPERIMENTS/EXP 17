@@ -1,0 +1,111 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyNQSmb3um0hVyyTNzJqynqh",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/sreepavithra04/CSA6301/blob/main/MODEL%20EXPERIMENTS/EXP%2017\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 1,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "5tYTDcGCJJ7X",
+        "outputId": "7fc9472b-a894-49c7-eebe-de0927b13b04"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Enter security control description: Employees must complete annual cybersecurity awareness training.\n",
+            "\n",
+            "ISO/IEC 27001 Annex A Classification\n",
+            "==================================================\n",
+            "Control: Employees must complete annual cybersecurity awareness training.\n",
+            "Domain: A.6 People Controls\n"
+          ]
+        }
+      ],
+      "source": [
+        "# Program 17: ISO/IEC 27001 Annex A Control Domain Classifier\n",
+        "\n",
+        "def classify_control(control):\n",
+        "\n",
+        "    text = control.lower()\n",
+        "\n",
+        "    domains = {\n",
+        "        \"A.5 Organizational Controls\": [\n",
+        "            \"policy\", \"organization\", \"roles\",\n",
+        "            \"responsibility\", \"governance\", \"supplier\"\n",
+        "        ],\n",
+        "\n",
+        "        \"A.6 People Controls\": [\n",
+        "            \"employee\", \"training\", \"awareness\",\n",
+        "            \"screening\", \"employment\", \"personnel\"\n",
+        "        ],\n",
+        "\n",
+        "        \"A.7 Physical Controls\": [\n",
+        "            \"physical\", \"building\", \"door\",\n",
+        "            \"security guard\", \"cctv\", \"server room\",\n",
+        "            \"access card\"\n",
+        "        ],\n",
+        "\n",
+        "        \"A.8 Technological Controls\": [\n",
+        "            \"firewall\", \"encryption\", \"antivirus\",\n",
+        "            \"malware\", \"backup\", \"logging\",\n",
+        "            \"authentication\", \"access control\",\n",
+        "            \"network\", \"endpoint\"\n",
+        "        ]\n",
+        "    }\n",
+        "\n",
+        "    scores = {}\n",
+        "\n",
+        "    for domain, keywords in domains.items():\n",
+        "        scores[domain] = sum(\n",
+        "            keyword in text for keyword in keywords\n",
+        "        )\n",
+        "\n",
+        "    best_domain = max(scores, key=scores.get)\n",
+        "\n",
+        "    if scores[best_domain] == 0:\n",
+        "        return \"Unable to classify\"\n",
+        "\n",
+        "    return best_domain\n",
+        "\n",
+        "\n",
+        "control = input(\"Enter security control description: \")\n",
+        "\n",
+        "result = classify_control(control)\n",
+        "\n",
+        "print(\"\\nISO/IEC 27001 Annex A Classification\")\n",
+        "print(\"=\" * 50)\n",
+        "print(\"Control:\", control)\n",
+        "print(\"Domain:\", result)"
+      ]
+    }
+  ]
+}
