@@ -1,0 +1,136 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyM/MEUXpAMiChLYl8oqUfnZ",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/sreepavithra04/CSA6301/blob/main/MODEL%20EXPERIMENTS/EXP%205\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 1,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "9p4qZrqfDvl3",
+        "outputId": "3c7833c1-dc86-4ffe-952e-816ccf5e69ff"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Enter threat intelligence report description: Description: Report analyzes long-term cyber risks from ransomware groups and their impact on the organization.  Audience: Senior management and executive leadership\n",
+            "Enter intended audience: Senior management and executive leadership\n",
+            "\n",
+            "Classification Result\n",
+            "========================================\n",
+            "Strategic Score : 5\n",
+            "Tactical Score  : 0\n",
+            "Operational Score: 0\n",
+            "\n",
+            "Final Classification: Strategic\n"
+          ]
+        }
+      ],
+      "source": [
+        "# Program 5: Threat Intelligence Report Classifier\n",
+        "\n",
+        "def classify_report(description, audience):\n",
+        "\n",
+        "    text = (description + \" \" + audience).lower()\n",
+        "\n",
+        "    strategic_keywords = [\n",
+        "        \"executive\",\n",
+        "        \"management\",\n",
+        "        \"leadership\",\n",
+        "        \"board\",\n",
+        "        \"long-term\",\n",
+        "        \"business risk\",\n",
+        "        \"investment\",\n",
+        "        \"policy\",\n",
+        "        \"organization\"\n",
+        "    ]\n",
+        "\n",
+        "    tactical_keywords = [\n",
+        "        \"security team\",\n",
+        "        \"soc\",\n",
+        "        \"defender\",\n",
+        "        \"attack techniques\",\n",
+        "        \"tactics\",\n",
+        "        \"techniques\",\n",
+        "        \"procedures\",\n",
+        "        \"mitigation\",\n",
+        "        \"threat actor\"\n",
+        "    ]\n",
+        "\n",
+        "    operational_keywords = [\n",
+        "        \"analyst\",\n",
+        "        \"incident response\",\n",
+        "        \"alert\",\n",
+        "        \"ip address\",\n",
+        "        \"domain\",\n",
+        "        \"hash\",\n",
+        "        \"malware sample\",\n",
+        "        \"indicator\",\n",
+        "        \"ioc\",\n",
+        "        \"real-time\"\n",
+        "    ]\n",
+        "\n",
+        "    strategic_score = sum(word in text for word in strategic_keywords)\n",
+        "    tactical_score = sum(word in text for word in tactical_keywords)\n",
+        "    operational_score = sum(word in text for word in operational_keywords)\n",
+        "\n",
+        "    scores = {\n",
+        "        \"Strategic\": strategic_score,\n",
+        "        \"Tactical\": tactical_score,\n",
+        "        \"Operational\": operational_score\n",
+        "    }\n",
+        "\n",
+        "    classification = max(scores, key=scores.get)\n",
+        "\n",
+        "    if all(score == 0 for score in scores.values()):\n",
+        "        classification = \"Unable to classify\"\n",
+        "\n",
+        "    return classification, scores\n",
+        "\n",
+        "\n",
+        "# User input\n",
+        "description = input(\"Enter threat intelligence report description: \")\n",
+        "audience = input(\"Enter intended audience: \")\n",
+        "\n",
+        "classification, scores = classify_report(description, audience)\n",
+        "\n",
+        "print(\"\\nClassification Result\")\n",
+        "print(\"=\" * 40)\n",
+        "\n",
+        "print(\"Strategic Score :\", scores[\"Strategic\"])\n",
+        "print(\"Tactical Score  :\", scores[\"Tactical\"])\n",
+        "print(\"Operational Score:\", scores[\"Operational\"])\n",
+        "\n",
+        "print(\"\\nFinal Classification:\", classification)"
+      ]
+    }
+  ]
+}
