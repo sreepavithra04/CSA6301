@@ -1,0 +1,120 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyNDP5Z5teUom8UG1ceiSwyd",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/sreepavithra04/CSA6301/blob/main/MODEL%20EXPERIMENTS/EXP%2012\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 1,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "3lM6Ez4zHU5d",
+        "outputId": "18c9b592-9ca8-4dde-9259-c084598b56fb"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Enter SOC alert description: Ransomware detected on the production server with possible data exfiltration.\n",
+            "\n",
+            "SOC Alert Triage\n",
+            "========================================\n",
+            "Alert: Ransomware detected on the production server with possible data exfiltration.\n",
+            "Priority: P1 - Critical\n"
+          ]
+        }
+      ],
+      "source": [
+        "# Program 12: SOC Alert Priority Classifier\n",
+        "\n",
+        "def classify_alert(alert):\n",
+        "\n",
+        "    alert = alert.lower()\n",
+        "\n",
+        "    # P1 - Critical\n",
+        "    p1_keywords = [\n",
+        "        \"ransomware\",\n",
+        "        \"data breach\",\n",
+        "        \"active attack\",\n",
+        "        \"critical server compromised\",\n",
+        "        \"mass compromise\",\n",
+        "        \"production down\",\n",
+        "        \"exfiltration\"\n",
+        "    ]\n",
+        "\n",
+        "    # P2 - High\n",
+        "    p2_keywords = [\n",
+        "        \"malware\",\n",
+        "        \"privilege escalation\",\n",
+        "        \"multiple failed logins\",\n",
+        "        \"suspicious administrator\",\n",
+        "        \"credential theft\",\n",
+        "        \"command and control\",\n",
+        "        \"c2\"\n",
+        "    ]\n",
+        "\n",
+        "    # P3 - Medium\n",
+        "    p3_keywords = [\n",
+        "        \"phishing attempt\",\n",
+        "        \"suspicious login\",\n",
+        "        \"port scan\",\n",
+        "        \"unusual traffic\",\n",
+        "        \"malicious email\",\n",
+        "        \"failed login\"\n",
+        "    ]\n",
+        "\n",
+        "    # P1\n",
+        "    if any(word in alert for word in p1_keywords):\n",
+        "        return \"P1 - Critical\"\n",
+        "\n",
+        "    # P2\n",
+        "    elif any(word in alert for word in p2_keywords):\n",
+        "        return \"P2 - High\"\n",
+        "\n",
+        "    # P3\n",
+        "    elif any(word in alert for word in p3_keywords):\n",
+        "        return \"P3 - Medium\"\n",
+        "\n",
+        "    # P4\n",
+        "    else:\n",
+        "        return \"P4 - Low\"\n",
+        "\n",
+        "\n",
+        "alert = input(\"Enter SOC alert description: \")\n",
+        "\n",
+        "priority = classify_alert(alert)\n",
+        "\n",
+        "print(\"\\nSOC Alert Triage\")\n",
+        "print(\"=\" * 40)\n",
+        "print(\"Alert:\", alert)\n",
+        "print(\"Priority:\", priority)"
+      ]
+    }
+  ]
+}
