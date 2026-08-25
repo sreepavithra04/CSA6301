@@ -1,0 +1,142 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyOyLb7Vl+IY5Kb/swEh+TBa",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/sreepavithra04/CSA6301/blob/main/MODEL%20EXPERIMENTS/EXP%2011\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 1,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "0FuAzl42HAzX",
+        "outputId": "e7b4035b-2487-4b94-de1b-03f3e1bba95b"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Collecting scapy\n",
+            "  Downloading scapy-2.7.0-py3-none-any.whl.metadata (5.8 kB)\n",
+            "Downloading scapy-2.7.0-py3-none-any.whl (2.6 MB)\n",
+            "\u001b[2K   \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m2.6/2.6 MB\u001b[0m \u001b[31m9.7 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hInstalling collected packages: scapy\n",
+            "Successfully installed scapy-2.7.0\n"
+          ]
+        }
+      ],
+      "source": [
+        "!pip install scapy\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Program 11: Packet Sniffing using Scapy\n",
+        "\n",
+        "from scapy.all import sniff, IP, TCP, UDP, ICMP\n",
+        "\n",
+        "\n",
+        "def packet_summary(packet):\n",
+        "\n",
+        "    if IP in packet:\n",
+        "\n",
+        "        source = packet[IP].src\n",
+        "        destination = packet[IP].dst\n",
+        "\n",
+        "        if TCP in packet:\n",
+        "            protocol = \"TCP\"\n",
+        "\n",
+        "        elif UDP in packet:\n",
+        "            protocol = \"UDP\"\n",
+        "\n",
+        "        elif ICMP in packet:\n",
+        "            protocol = \"ICMP\"\n",
+        "\n",
+        "        else:\n",
+        "            protocol = \"Other\"\n",
+        "\n",
+        "        print(\n",
+        "            f\"Protocol: {protocol:<6} \"\n",
+        "            f\"Source: {source:<15} \"\n",
+        "            f\"Destination: {destination}\"\n",
+        "        )\n",
+        "\n",
+        "\n",
+        "print(\"Starting packet capture...\")\n",
+        "print(\"Capturing 10 packets...\\n\")\n",
+        "\n",
+        "packets = sniff(\n",
+        "    count=10,\n",
+        "    prn=packet_summary\n",
+        ")\n",
+        "\n",
+        "print(\"\\nPacket capture completed.\")"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "0fQ_mXk6HKa3",
+        "outputId": "4be0a3d3-46b7-4fb3-8955-9d6ef349d2b3"
+      },
+      "execution_count": 2,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stderr",
+          "text": [
+            "/usr/local/lib/python3.13/dist-packages/scapy/layers/tls/crypto/groups.py:25: CryptographyDeprecationWarning: Diffie-Hellman over finite fields (FFDH) is deprecated and support will be removed in a future release. Use a more modern key exchange algorithm.\n",
+            "  from cryptography.hazmat.primitives.asymmetric.dh import DHParameterNumbers\n"
+          ]
+        },
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Starting packet capture...\n",
+            "Capturing 10 packets...\n",
+            "\n",
+            "Protocol: TCP    Source: 172.28.0.12     Destination: 172.28.0.1\n",
+            "Protocol: TCP    Source: 172.28.0.1      Destination: 172.28.0.12\n",
+            "Protocol: TCP    Source: 172.28.0.12     Destination: 172.28.0.1\n",
+            "Protocol: TCP    Source: 172.28.0.1      Destination: 172.28.0.12\n",
+            "Protocol: TCP    Source: 172.28.0.12     Destination: 172.28.0.1\n",
+            "Protocol: TCP    Source: 172.28.0.1      Destination: 172.28.0.12\n",
+            "Protocol: TCP    Source: 172.28.0.12     Destination: 172.28.0.1\n",
+            "Protocol: TCP    Source: 172.28.0.1      Destination: 172.28.0.12\n",
+            "Protocol: TCP    Source: 172.28.0.12     Destination: 172.28.0.1\n",
+            "Protocol: TCP    Source: 172.28.0.1      Destination: 172.28.0.12\n",
+            "\n",
+            "Packet capture completed.\n"
+          ]
+        }
+      ]
+    }
+  ]
+}
